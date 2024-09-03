@@ -3,8 +3,14 @@ namespace SpriteKind {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.MadPerson, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
+    GhostCounter += -1
+    Person.sayText(ghostVelocity)
+    if (ghostVelocity <= maxGhostVelocity) {
+        ghostVelocity += 1
+    }
+    info.changeScoreBy(1)
 })
-controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+function SpawnGhost () {
     Ghost = sprites.create(img`
         ........................
         ........................
@@ -31,18 +37,16 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         ........................
         ........................
         `, SpriteKind.MadPerson)
-    ActiveGhosts += 1
-    Person.sayText(ActiveGhosts)
+    GhostCounter += 1
+    Person.sayText(ghostVelocity)
     Ghost.setPosition(randint(10, 150), randint(55, 110))
     Ghost.scale = 0.75
-})
-sprites.onDestroyed(SpriteKind.MadPerson, function (sprite) {
-    ActiveGhosts += -1
-    Person.sayText(ActiveGhosts)
-    info.changeScoreBy(1)
-})
-let ActiveGhosts = 0
+    Ghost.setVelocity(ghostVelocity, ghostVelocity)
+    Ghost.setBounceOnWall(true)
+}
 let Ghost: Sprite = null
+let maxGhostVelocity = 0
+let ghostVelocity = 0
 let Person: Sprite = null
 scene.setBackgroundImage(img`
     3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
@@ -185,4 +189,16 @@ Person = sprites.create(img`
     . . . . . . f f f . . . . . . . 
     `, SpriteKind.Player)
 Person.setPosition(randint(10, 150), randint(10, 150))
+info.setScore(0)
 controller.moveSprite(Person)
+let GhostCounter = 0
+ghostVelocity = 50
+maxGhostVelocity = 150
+let maxGhosts = 10
+SpawnGhost()
+Person.setBounceOnWall(true)
+game.onUpdateInterval(850, function () {
+    if (maxGhosts > GhostCounter) {
+        SpawnGhost()
+    }
+})
