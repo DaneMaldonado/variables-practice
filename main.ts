@@ -10,6 +10,21 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.MadPerson, function (sprite, oth
     }
     info.changeScoreBy(1)
 })
+function SetDifficulty () {
+    if (Difficulty == 0) {
+        maxGhosts = 5
+        ghostVelocity = 25
+        maxGhostVelocity = 50
+    } else if (Difficulty == 1) {
+        maxGhosts = 3
+        ghostVelocity = 50
+        maxGhostVelocity = 75
+    } else if (Difficulty == 2) {
+        maxGhosts = 1
+        ghostVelocity = 100
+        maxGhostVelocity = 150
+    }
+}
 function SpawnGhost () {
     Ghost = sprites.create(img`
         ........................
@@ -45,8 +60,10 @@ function SpawnGhost () {
     Ghost.setBounceOnWall(true)
 }
 let Ghost: Sprite = null
+let maxGhosts = 0
 let maxGhostVelocity = 0
 let ghostVelocity = 0
+let Difficulty = 0
 let Person: Sprite = null
 scene.setBackgroundImage(img`
     3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
@@ -192,10 +209,11 @@ Person.setPosition(randint(10, 150), randint(10, 150))
 info.setScore(0)
 controller.moveSprite(Person)
 let GhostCounter = 0
-ghostVelocity = 50
-maxGhostVelocity = 150
-let maxGhosts = 10
-SpawnGhost()
+Difficulty = 3
+while (Difficulty > 2) {
+    Difficulty = game.askForNumber("Choose your difficulty: 0 to 2")
+}
+SetDifficulty()
 Person.setBounceOnWall(true)
 game.onUpdateInterval(850, function () {
     if (maxGhosts > GhostCounter) {
