@@ -25,6 +25,12 @@ function SetDifficulty () {
         maxGhostVelocity = 150
     }
 }
+function FalseDifficultyInput () {
+    if (Difficulty != 0 && (Difficulty != 1 && Difficulty != 2)) {
+        game.splash("Please choose a different number")
+        game.reset()
+    }
+}
 function SpawnGhost () {
     Ghost = sprites.create(img`
         ........................
@@ -210,9 +216,8 @@ info.setScore(0)
 controller.moveSprite(Person)
 let GhostCounter = 0
 Difficulty = 3
-while (Difficulty > 2) {
-    Difficulty = game.askForNumber("Choose your difficulty: 0 to 2")
-}
+Difficulty = game.askForNumber("Choose your difficulty: 0 to 2", 1)
+FalseDifficultyInput()
 SetDifficulty()
 Person.setBounceOnWall(true)
 game.onUpdateInterval(850, function () {
